@@ -13,8 +13,11 @@ import CoreLocation
 class MapViewController: UIViewController {
 
     @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var segmentedControl: UISegmentedControl!
     var locationManager: CLLocationManager!
     var businesses: [Business]!
+    var filteredData: [Business]!
+    var annotations: [MKPointAnnotation]!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,10 +25,9 @@ class MapViewController: UIViewController {
         // set the region to display, this also sets a correct zoom level
         // set starting center location in San Francisco
 //        let centerLocation = CLLocation(latitude: 37.7833, longitude: -122.4167)
-        for business in businesses {
-            let centerLocation = business.coordinates
-            goToLocation(centerLocation!, name: business.name!)
-        }
+        
+        annotations = [MKPointAnnotation]()
+        reloadMap(filteredData)
         
         locationManager = CLLocationManager()
         locationManager.delegate = self
@@ -37,6 +39,15 @@ class MapViewController: UIViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    func reloadMap(data: [Business]) {
+        
+        mapView.removeAnnotations(annotations)
+        for business in data {
+            let centerLocation = business.coordinates
+            goToLocation(centerLocation!, name: business.name!)
+        }
     }
     
     func goToLocation(location: CLLocation, name: String) {
@@ -51,6 +62,18 @@ class MapViewController: UIViewController {
         dismissViewControllerAnimated(true, completion: nil)
     }
 
+    @IBAction func onSegmentChange(sender: AnyObject) {
+        switch segmentedControl.selectedSegmentIndex
+        {
+        case 0:
+            reloadMap(filteredData)
+        case 1:
+            reloadMap(businesses)
+        default:
+            break; 
+        } 
+
+    }
     /*
     // MARK: - Navigation
 
@@ -87,6 +110,7 @@ extension MapViewController: CLLocationManagerDelegate {
         annotation.coordinate = coordinate
         annotation.title = name
         mapView.addAnnotation(annotation)
+        annotations.append(annotation)
     }
 
 

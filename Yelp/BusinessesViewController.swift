@@ -40,7 +40,7 @@ class BusinessesViewController: UIViewController {
         
         // create the search bar programatically since you won't be
         // able to drag one onto the navigation bar
-        var searchBar = UISearchBar()
+        let searchBar = UISearchBar()
         searchBar.sizeToFit()
         searchBar.delegate = self
         
@@ -96,7 +96,7 @@ class BusinessesViewController: UIViewController {
         let navigationController = segue.destinationViewController as! UINavigationController
         let mapViewController = navigationController.viewControllers.first as! MapViewController
         mapViewController.businesses = businesses
-
+        mapViewController.filteredData = filteredData
     }
 
 }
